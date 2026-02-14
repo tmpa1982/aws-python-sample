@@ -30,10 +30,14 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Stage 2: Runtime
 FROM python:3.13-slim-bookworm
 
+# Add build argument for git commit hash
+ARG GIT_COMMIT_HASH
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    APP_VERSION=${GIT_COMMIT_HASH:-UNKNOWN}
 
 WORKDIR /app
 
