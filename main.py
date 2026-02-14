@@ -1,6 +1,7 @@
-def main():
-    print("Hello from aws-python-sample!")
+from fastapi import FastAPI
 
+app = FastAPI()
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+async def say_hello(name: str = "World"):
+    return f"Hello {name}"
