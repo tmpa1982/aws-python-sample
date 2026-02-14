@@ -39,3 +39,12 @@ jobs:
           docker build --build-arg GIT_COMMIT_HASH=${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Deploy to Amazon ECS
+        run: |
+          aws cloudformation deploy \
+            --stack-name ecs-fargate-app \
+            --template-file iac/ecs.yaml \
+            --parameter-overrides ImageUrl=${{ steps.login-ecr.outputs.registry }}/app-repo:${{ github.sha }} \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-cli-pager
